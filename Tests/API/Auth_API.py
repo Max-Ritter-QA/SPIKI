@@ -14,14 +14,26 @@ def create_token_from_otp(code):
     payload = {"username": EMAIL, "password": code}
     response = requests.post(url, data=payload,headers = headers)
     assert response.status_code == 200, f"Ожидаемый статус код: {response.status_code}"
-    return response.json().get("refresh_token")
+    data = response.json()
+    access_token = data.get("access_token")
+    refresh_token = data.get("refresh_token")
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token
+    }
 
-def refresh_token(token):
+def refresh_token( refresh_token):
     url = f"{BASE_URL}/api/v0/auth/token/refresh"
-    payload = {"refresh_token": token}
+    payload = {"refresh_token":  refresh_token}
     response = requests.post(url, json=payload)
     assert response.status_code == 200, f"Ожидаемый статус код: {response.status_code}"
-    return response.json().get("access_token")
+    data = response.json()
+    access_token = data.get("access_token")
+    new_refresh_token = data.get("refresh_token")
+    return {
+        "access_token": access_token,
+        "refresh_token": new_refresh_token
+    }
 
 def delete_user(token):
     url = f"{BASE_URL}/api/v0/auth/accounts/me"
