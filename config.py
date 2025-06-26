@@ -5,4 +5,3 @@ load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
 EMAIL = os.getenv("EMAIL")
-EMAIL_token=os.getenv(EMAIL)

@@ -11,7 +11,7 @@ def create_otp():
 def create_token_from_otp(code):
     url = f"{BASE_URL}/api/v0/auth/token"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    payload = {"username": EMAIL, "password": code}
+    payload = {"username": EMAIL, "password": code, "grant_type": "password"}
     response = requests.post(url, data=payload,headers = headers)
     assert response.status_code == 200, f"Ожидаемый статус код: {response.status_code}"
     data = response.json()
@@ -35,9 +35,10 @@ def refresh_token( refresh_token):
         "refresh_token": new_refresh_token
     }
 
-def delete_user(token):
+def delete_user(access_token):
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
     url = f"{BASE_URL}/api/v0/auth/accounts/me"
-    headers = {"Authorization": f"Bearer {token}"}
     response = requests.delete(url, headers=headers)
-    assert response.status_code == 204, f"Ожидаемый статус код: {response.status_code}"
-    return True
+    return response
